@@ -1,0 +1,25 @@
+# 程序模式 dev/prod
+#profile: prod
+
+cron: 0 0 1 1 * ?
+historyStart: 2020-01-01
+historyEnd: 2020-01-10
+
+db:
+  host: 10.72.234.78
+  port: 1521
+  serviceName: ORCL
+  username: YTHZNJCPT
+  password: HongYou20181221
+  dataTable: DBA01_TEST
+
+# taos
+TD:
+  host: 10.72.234.78
+  port: 6041
+  user: root
+  password: taosdata
+  maxOpenConns: 20
+  dataBase: gas
+  sTable: gas_data
+
