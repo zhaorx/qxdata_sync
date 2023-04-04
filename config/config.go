@@ -54,6 +54,7 @@ type DB struct {
 	MaxOpenConns int    `yaml:"maxOpenConns"`
 	ServiceName  string `yaml:"serviceName"`
 	DataTable    string `yaml:"dataTable"`
+	WellTable    string `yaml:"wellTable"`
 }
 
 type TD struct {

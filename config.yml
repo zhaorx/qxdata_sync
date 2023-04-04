@@ -12,6 +12,7 @@ db:
   username: YTHZNJCPT
   password: HongYou20181221
   dataTable: DBA01_TEST
+  wellTable: V_CD_WELL_SOURCE_TEST
 
 # taos
 td:
