@@ -6,6 +6,7 @@ import (
 
 	_ "github.com/godror/godror"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/taosdata/driver-go/v3/taosRestful"
 	"qxdata_sync/config"
 )
 
@@ -42,7 +43,7 @@ func ConnectTaos(cfg config.TD) (*sqlx.DB, error) {
 	var taosDSN = fmt.Sprintf("%s:%s@http(%s:%d)/", cfg.User, cfg.Password, cfg.Host, cfg.Port)
 	taos, err := sqlx.Open("taosRestful", taosDSN)
 	if err != nil {
-		// log.Fatal("taos init error:%v", err)
+		log.Fatal("taos init error:%v", err)
 		return nil, err
 	}
 

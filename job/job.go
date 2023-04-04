@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/taosdata/driver-go/v2/taosRestful"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"qxdata_sync/config"
 	"qxdata_sync/database"
@@ -63,10 +62,35 @@ func RunHistory() {
 		list, err := queryOneDayData(t)
 		if err != nil {
 			logger.Println(err.Error())
-			return
+			continue
 		}
-		fmt.Println(len(list))
-		time.Sleep(time.Second * 5)
+		// fmt.Println(len(list))
+
+		// 写taos 拼接多value insert
+		// suffix := ""
+		for i := 0; i < len(list); i++ {
+			item := list[i]
+			rqstr := item.RQ.Format("2006-01-02 15:04:05")
+			// suffix += fmt.Sprintf(` ('%s','%s','%s','%s',%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f) `, rqstr, item.JH, item.WELL_ID, item.CYFS,
+			// 	item.SCSJ, item.BJ, &item.PL, item.CC, item.CC1, item.YY, item.TY, item.HY, item.SXDL, item.XXDL, item.RCYL1, item.RCYL, item.RCSL,
+			// 	item.QYHS, item.HS, item.BZ)
+
+			insert_sql := `INSERT INTO %s.%s VALUES `
+			sql := fmt.Sprintf(insert_sql, cfg.TD.DataBase, list[0].WELL_ID) + fmt.Sprintf(` ('%s','%s','%s','%s',%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,
+%f,%f,%f,%f,'%s') `, rqstr, item.JH.String, item.WELL_ID, item.CYFS.String,
+				item.SCSJ.Float64, item.BJ.Float64, item.PL.Float64, item.CC.Float64,
+				item.CC1.Float64, item.YY.Float64, item.TY.Float64, item.HY.Float64,
+				item.SXDL.Float64, item.XXDL.Float64, item.RCYL1.Float64, item.RCYL.Float64,
+				item.RCSL.Float64, item.QYHS.Float64, item.HS.Float64, item.BZ.String)
+			_, err := taos.Exec(sql)
+			if err != nil {
+				logger.Println(err.Error())
+				logger.Println("insert failed: " + sql)
+				continue
+			}
+		}
+
+		time.Sleep(time.Second * 1)
 	}
 }
 
@@ -90,7 +114,8 @@ func queryOneDayData(rq time.Time) (list []Data, err error) {
 		return list, errors.New("cfg.DB.DataTable is null")
 	}
 
-	sql := fmt.Sprintf("SELECT * FROM \"%s\" WHERE RQ =:1", cfg.DB.DataTable)
+	// sql := fmt.Sprintf("SELECT * FROM \"%s\" WHERE RQ =:1", cfg.DB.DataTable)
+	sql := fmt.Sprintf("SELECT * FROM \"%s\" WHERE RQ =:1 AND JH='15W2-20-25'", cfg.DB.DataTable) // 只处理15W2-20-25
 	list = make([]Data, 0, 0)
 	err = db.Select(&list, sql, rq)
 	if err != nil {
