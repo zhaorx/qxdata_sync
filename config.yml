@@ -11,6 +11,7 @@ db:
   serviceName: ORCL
   username: YTHZNJCPT
   password: HongYou20181221
+  maxOpenConns: 10
   dataTable: DBA01_TEST
   wellTable: V_CD_WELL_SOURCE_TEST
 
@@ -20,7 +21,7 @@ td:
   port: 6041
   user: root
   password: taosdata
-  maxOpenConns: 20
+  maxOpenConns: 10
   dataBase: qx
   sTable: dba01
 

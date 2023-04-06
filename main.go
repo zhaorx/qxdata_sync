@@ -1,28 +1,29 @@
 package main
 
 import (
+	"log"
+	"runtime"
+	"time"
+
 	"github.com/robfig/cron/v3"
 	"qxdata_sync/config"
-	_ "qxdata_sync/config"
-	_ "qxdata_sync/database"
 	"qxdata_sync/job"
 )
 
 var cfg = config.Cfg
 
 func main() {
-	registerJob() // 注册cron
+	registerDailyJob() // 注册每日任务
 
-	// 2. init config 根据config里时间段 顺序转储油井日数据到taos中
-
+	// go runNumGoroutineMonitor()
 	if len(cfg.HistoryStart) > 0 && len(cfg.HistoryEnd) > 0 {
-		go job.RunHistory()
+		job.RunHistory()
 	}
 
 	select {}
 }
 
-func registerJob() {
+func registerDailyJob() {
 	if len(cfg.Cron) == 0 {
 		panic("Cron表达式为空!")
 	}
@@ -42,4 +43,16 @@ func newWithSeconds() *cron.Cron {
 	secondParser := cron.NewParser(cron.Second | cron.Minute |
 		cron.Hour | cron.Dom | cron.Month | cron.DowOptional | cron.Descriptor)
 	return cron.New(cron.WithParser(secondParser), cron.WithChain())
+}
+
+// runNumGoroutineMonitor 协程数量监控
+func runNumGoroutineMonitor() {
+	log.Printf("协程数量->%d\n", runtime.NumGoroutine())
+
+	for {
+		select {
+		case <-time.After(time.Second):
+			log.Printf("协程数量->%d\n", runtime.NumGoroutine())
+		}
+	}
 }
