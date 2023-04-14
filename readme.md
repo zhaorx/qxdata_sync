@@ -6,7 +6,8 @@
 4. 按照这个遍历逻辑继续 直到所有jh的所有range都insert taos
 5. 多线程改造
 6. 替换原生连接taos
-6. 完善log
+7. 参数绑定
+8. 完善log
 
 ##### tag sync
 1. 每日同步V_CD_WELL_SOURCE中的单井基本信息wells
