@@ -6,7 +6,8 @@ import (
 
 	_ "github.com/godror/godror"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/taosdata/driver-go/v3/taosRestful"
+	// _ "github.com/taosdata/driver-go/v3/taosRestful"
+	_ "github.com/taosdata/driver-go/v3/taosSql"
 	"qxdata_sync/config"
 )
 
@@ -31,7 +32,27 @@ func ConnectDB(cfg config.DB) (*sqlx.DB, error) {
 	return DB, nil
 }
 
+// ConnectTaos taos原生连接
 func ConnectTaos(cfg config.TD) (*sqlx.DB, error) {
+	var taosUri = fmt.Sprintf("%s:%s@tcp(%s:%d)/", cfg.User, cfg.Password, cfg.Host, cfg.Port)
+	taos, err := sqlx.Open("taosSql", taosUri)
+	if err != nil {
+		log.Fatal("taos init error:%v", err)
+	}
+
+	// var taosDSN = fmt.Sprintf("%s:%s@http(%s:%d)/", cfg.User, cfg.Password, cfg.Host, cfg.Port)
+	// taos, err := sqlx.Open("taosRestful", taosDSN)
+	// if err != nil {
+	// 	log.Fatal("taos init error:%v", err)
+	// 	return nil, err
+	// }
+
+	taos.SetMaxOpenConns(cfg.MaxOpenConns)
+	log.Println("taos init success：" + cfg.Host)
+	return taos, nil
+}
+
+func ConnectTaosRest(cfg config.TD) (*sqlx.DB, error) {
 	// var taosUri = fmt.Sprintf("%s:%s@tcp(%s:%d)/", cfg.User, cfg.Password, cfg.Host, cfg.Port)
 	// fmt.Println("taosUri:", taosUri)
 	// taos, err := sql.Open("taosSql", taosUri)

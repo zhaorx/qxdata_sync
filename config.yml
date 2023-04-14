@@ -18,7 +18,8 @@ db:
 # taos
 td:
   host: 10.72.234.78
-  port: 6041
+  port: 6030
+#  port: 6041
   user: root
   password: taosdata
   maxOpenConns: 10

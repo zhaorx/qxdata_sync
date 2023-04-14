@@ -5,6 +5,7 @@
 3. 遍历ranges 拼接成一个100values的insert sql 写入taos
 4. 按照这个遍历逻辑继续 直到所有jh的所有range都insert taos
 5. 多线程改造
+6. 替换原生连接taos
 6. 完善log
 
 ##### tag sync
