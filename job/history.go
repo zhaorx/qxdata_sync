@@ -108,8 +108,8 @@ func insertBatchData(list []Data) error {
 	for i := 0; i < len(list); i++ {
 		item := list[i]
 		rqstr := item.RQ.Format("2006-01-02 15:04:05")
-		suffix += fmt.Sprintf(` ('%s','%s','%s','%s',%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,'%s') `,
-			rqstr, item.JH.String, item.WELL_ID, item.CYFS.String,
+		suffix += fmt.Sprintf(` ('%s','%s',%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,'%s') `,
+			rqstr, item.CYFS.String,
 			item.SCSJ.Float64, item.BJ.Float64, item.PL.Float64, item.CC.Float64,
 			item.CC1.Float64, item.YY.Float64, item.TY.Float64, item.HY.Float64,
 			item.SXDL.Float64, item.XXDL.Float64, item.RCYL1.Float64, item.RCYL.Float64,
