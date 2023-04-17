@@ -14,6 +14,8 @@ const (
 	queueSize = 10 // 任务队列容量
 )
 
+var loc, _ = time.LoadLocation("Asia/Shanghai")
+
 // RunHistory 转储单井历史段日数据至taos
 func RunHistory() {
 	logger = util.InitLog("history")
@@ -105,9 +107,10 @@ func syncWellAll(well_id string, start time.Time, end time.Time) {
 func insertBatchData(list []Data) error {
 	// 写taos 拼接多value insert
 	suffix := ""
+
 	for i := 0; i < len(list); i++ {
 		item := list[i]
-		rqstr := item.RQ.Format("2006-01-02 15:04:05")
+		rqstr := item.RQ.In(loc).Format(time.RFC3339Nano)
 		suffix += fmt.Sprintf(` ('%s','%s',%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,'%s') `,
 			rqstr, item.CYFS.String,
 			item.SCSJ.Float64, item.BJ.Float64, item.PL.Float64, item.CC.Float64,
