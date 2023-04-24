@@ -1,6 +1,8 @@
 package config
 
 import (
+	"flag"
+	"log"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -8,12 +10,16 @@ import (
 
 var Cfg Config
 
-const configPath = "./config.yml"
+const defaultConfigPath = "./config.yml"
 
-// 加载log
+// 加载log 启动程序使用-c定义配置文件路径 例如: -c ./temp/config.yml
 func init() {
+	configPath := flag.String("c", defaultConfigPath, "config.yml file path")
+	flag.Parse()
+	log.Println("config file path -> ", *configPath)
+
 	// load cfg
-	data, err := os.ReadFile(configPath)
+	data, err := os.ReadFile(*configPath)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -28,7 +34,7 @@ func init() {
 // cfg 缺省设置
 func NewConfigWithDefault() Config {
 	c := Config{
-		Profile: "dev",
+		Profile: "daily",
 		Cron:    "0 0 1 1 * ?",
 	}
 	return c

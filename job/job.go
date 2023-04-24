@@ -45,8 +45,8 @@ func queryOneDayData(rq time.Time) (list []Data, err error) {
 		return list, errors.New("cfg.DB.DataTable is null")
 	}
 
-	// sql := fmt.Sprintf("SELECT * FROM \"%s\" WHERE RQ =:1", cfg.DB.DataTable)
-	sql := fmt.Sprintf("SELECT * FROM \"%s\" WHERE RQ=:1 AND JH='15W2-20-25'", cfg.DB.DataTable) // 只处理15W2-20-25
+	sql := fmt.Sprintf("SELECT * FROM \"%s\" WHERE RQ =:1", cfg.DB.DataTable)
+	// sql := fmt.Sprintf("SELECT * FROM \"%s\" WHERE RQ=:1 AND JH='15W2-20-25'", cfg.DB.DataTable) // 只处理15W2-20-25
 	list = make([]Data, 0, 0)
 	err = db.Select(&list, sql, rq)
 	if err != nil {

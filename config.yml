@@ -1,5 +1,5 @@
-# 程序模式 dev/prod
-#profile: prod
+# 程序模式 daily/history
+profile: history
 
 cron: 0 0 1 1 * ?
 historyStart: 2014-11-05

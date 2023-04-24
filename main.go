@@ -13,10 +13,10 @@ import (
 var cfg = config.Cfg
 
 func main() {
-	registerDailyJob() // 注册每日任务
-
-	// go runNumGoroutineMonitor()
-	if len(cfg.HistoryStart) > 0 && len(cfg.HistoryEnd) > 0 {
+	switch cfg.Profile {
+	case "daily":
+		registerDailyJob() // 注册每日任务
+	case "history":
 		job.RunHistory()
 	}
 
@@ -45,7 +45,7 @@ func newWithSeconds() *cron.Cron {
 	return cron.New(cron.WithParser(secondParser), cron.WithChain())
 }
 
-// runNumGoroutineMonitor 协程数量监控
+// runNumGoroutineMonitor 打印协程数量
 func runNumGoroutineMonitor() {
 	log.Printf("协程数量->%d\n", runtime.NumGoroutine())
 

@@ -60,25 +60,6 @@ func RunHistory() {
 	logger.Println("RunHistory end...")
 }
 
-// 匹分时间区间
-func getRanges(start time.Time, end time.Time) [][]time.Time {
-	ranges := make([][]time.Time, 0)
-	sizeDur := time.Duration(size) * time.Hour * 24
-	cur := start
-	for ; cur.Before(end); cur = cur.Add(sizeDur) {
-		item := make([]time.Time, 2)
-		item[0] = cur
-		item[1] = cur.Add(sizeDur).Add(time.Hour * -24)
-		if cur.Add(sizeDur).Add(time.Hour * -24).After(end) {
-			item[1] = end
-		}
-
-		ranges = append(ranges, item)
-	}
-
-	return ranges
-}
-
 func syncWellAll(well_id string, start time.Time, end time.Time) {
 	logger.Printf("sync start: " + well_id)
 	// 匹分时间区间
@@ -170,4 +151,23 @@ func queryWellList() (list []Well, err error) {
 	}
 
 	return list, nil
+}
+
+// 匹分时间区间
+func getRanges(start time.Time, end time.Time) [][]time.Time {
+	ranges := make([][]time.Time, 0)
+	sizeDur := time.Duration(size) * time.Hour * 24
+	cur := start
+	for ; cur.Before(end); cur = cur.Add(sizeDur) {
+		item := make([]time.Time, 2)
+		item[0] = cur
+		item[1] = cur.Add(sizeDur).Add(time.Hour * -24)
+		if cur.Add(sizeDur).Add(time.Hour * -24).After(end) {
+			item[1] = end
+		}
+
+		ranges = append(ranges, item)
+	}
+
+	return ranges
 }
