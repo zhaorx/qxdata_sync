@@ -16,7 +16,7 @@ var cfg = config.Cfg
 var logger *log.Logger
 var db *sqlx.DB
 var taos *sqlx.DB
-var size int64 = 100 // 批量insert的天数
+var size int64 = 500 // 批量insert的天数
 
 // 初始化目标数据库连接
 func init() {
@@ -108,9 +108,15 @@ type Data struct {
 
 type Well struct {
 	WELL_ID string         `db:"WELL_ID"`
-	JH      sql.NullString `db:"JH"`
+	JH      sql.NullString `db:"WELL_DESC"`
 	CYC     sql.NullString `db:"CANTON"`
 	GLQ     sql.NullString `db:"CYKMC"`
 	CYD     sql.NullString `db:"CYDMC"`
+	CYB     sql.NullString `db:"CYB"`
 	QK      sql.NullString `db:"PROJECT_NAME"`
+	// CYCNAME sql.NullString `db:"CANTON"`
+	// GLQNAME sql.NullString `db:"CYKMC"`
+	// CYDNAME sql.NullString `db:"CYDMC"`
+	// CYBNAME sql.NullString `db:"CYBMC"`
+	// QKNAME  sql.NullString `db:"PROJECT_NAME"`
 }

@@ -8,11 +8,12 @@
 -6. 替换原生连接taos
 7. 参数绑定
 8. 完善log
-9. flag 自定义config文件位置 根据模式切换daily history
+-9. flag 自定义config文件位置 根据模式切换daily history
 
 ##### tag sync
-1. 每日同步V_CD_WELL_SOURCE中的单井基本信息wells
-2. 遍历wells 将每口井的cyc cyd等tag insert/update 至taos 保持每口井的tag数据与oracle一致
+-1. 每日同步 V_CD_WELL_SOURCE 中的单井基本信息wells
+-2. 遍历wells 将每口井的cyc cyd等tag insert/update 至taos 保持每口井的tag数据与oracle一致
+3. 多线程改造
 
 ##### daily sync
 1. 查询当前时间点前一天的所有井的日数据list

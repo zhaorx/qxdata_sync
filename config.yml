@@ -2,8 +2,8 @@
 profile: history
 
 cron: 0 0 1 1 * ?
-historyStart: 2014-11-05
-historyEnd: 2023-03-26
+historyStart: 2014-01-01
+historyEnd: 2022-09-14
 
 db:
   host: 10.72.234.78
@@ -12,8 +12,8 @@ db:
   username: YTHZNJCPT
   password: HongYou20181221
   maxOpenConns: 10
-  dataTable: DBA01_TEST
-  wellTable: V_CD_WELL_SOURCE_TEST
+  dataTable: DBA01
+  wellTable: V_CD_WELL_SOURCE
 
 # taos
 td:

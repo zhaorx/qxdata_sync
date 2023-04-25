@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	poolSize  = 5  // 多线程数量
-	queueSize = 10 // 任务队列容量
+	poolSize  = 10 // 多线程数量
+	queueSize = 20 // 任务队列容量
 )
 
 var loc, _ = time.LoadLocation("Asia/Shanghai")
@@ -47,10 +47,9 @@ func RunHistory() {
 	pool.WaitCount(len(list)) // how many jobs we should wait
 
 	for i := 0; i < len(list); i++ {
-		logger.Printf("push queue: %d %s\n", i, list[i].WELL_ID)
+		// logger.Printf("push queue: %d %s\n", i, list[i].WELL_ID)
 		x := i
 		pool.JobQueue <- func() {
-			logger.Printf("xi:%d %d\n", x, i)
 			syncWellAll(list[x].WELL_ID, start, end)
 			defer pool.JobDone()
 		}
@@ -60,8 +59,9 @@ func RunHistory() {
 	logger.Println("RunHistory end...")
 }
 
+// 转储某井所有时间段的数据
 func syncWellAll(well_id string, start time.Time, end time.Time) {
-	logger.Printf("sync start: " + well_id)
+	// logger.Printf("sync start: " + well_id)
 	// 匹分时间区间
 	count := 0
 	for _, r := range getRanges(start, end) {
@@ -101,10 +101,10 @@ func insertBatchData(list []Data) error {
 	}
 
 	insert_sql := `INSERT INTO %s.%s VALUES ` + suffix
-	sql := fmt.Sprintf(insert_sql, cfg.TD.DataBase, list[0].WELL_ID)
+	sql := fmt.Sprintf(insert_sql, cfg.TD.DataBase, tableNamePrefix+list[0].WELL_ID)
 	_, err := taos.Exec(sql)
 	if err != nil {
-		logger.Println("insert failed: " + sql)
+		// logger.Println("insert failed: " + sql)
 		return err
 	}
 
@@ -138,8 +138,7 @@ func queryWellList() (list []Well, err error) {
 		return list, errors.New("cfg.DB.DataTable is null")
 	}
 
-	// sql := fmt.Sprintf("SELECT * FROM \"%s\" WHERE RQ =:1", cfg.DB.DataTable)
-	sql := fmt.Sprintf("SELECT WELL_ID,WELL_DESC AS JH FROM \"%s\"", cfg.DB.WellTable)
+	sql := fmt.Sprintf("SELECT WELL_ID,WELL_DESC,CANTON,CYKMC,CYDMC,PROJECT_NAME FROM \"%s\"", cfg.DB.WellTable)
 	list = make([]Well, 0, 0)
 	err = db.Select(&list, sql)
 	if err != nil {
