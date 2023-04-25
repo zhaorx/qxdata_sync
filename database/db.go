@@ -34,7 +34,7 @@ func ConnectDB(cfg config.DB) (*sqlx.DB, error) {
 
 // ConnectTaos taos原生连接
 func ConnectTaos(cfg config.TD) (*sqlx.DB, error) {
-	var taosUri = fmt.Sprintf("%s:%s@tcp(%s:%d)/", cfg.User, cfg.Password, cfg.Host, cfg.Port)
+	var taosUri = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DataBase)
 	taos, err := sqlx.Open("taosSql", taosUri)
 	if err != nil {
 		log.Fatal("taos init error:%v", err)
