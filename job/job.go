@@ -40,14 +40,14 @@ func RunDaily() {
 }
 
 // 查询单井日数据
-func queryOneDayData(rq time.Time) (list []Data, err error) {
+func queryOneDayData(rq time.Time) (list []OilData, err error) {
 	if len(cfg.DB.DataTable) == 0 {
 		return list, errors.New("cfg.DB.DataTable is null")
 	}
 
 	sql := fmt.Sprintf("SELECT * FROM \"%s\" WHERE RQ =:1", cfg.DB.DataTable)
 	// sql := fmt.Sprintf("SELECT * FROM \"%s\" WHERE RQ=:1 AND JH='15W2-20-25'", cfg.DB.DataTable) // 只处理15W2-20-25
-	list = make([]Data, 0, 0)
+	list = make([]OilData, 0, 0)
 	err = db.Select(&list, sql, rq)
 	if err != nil {
 		return list, err
@@ -60,7 +60,7 @@ func queryOneDayData(rq time.Time) (list []Data, err error) {
 	return list, nil
 }
 
-type Data struct {
+type OilData struct {
 	RQ          time.Time       `db:"RQ"`
 	WELL_ID     string          `db:"WELL_ID"`
 	JH          sql.NullString  `db:"JH"`
@@ -104,6 +104,21 @@ type Data struct {
 	BZ          sql.NullString  `db:"BZ"`
 	DESCRIPTION sql.NullString  `db:"DESCRIPTION"`
 	GTLY        sql.NullFloat64 `db:"GTLY"`
+}
+
+type WaterData struct {
+	RQ      time.Time       `db:"RQ"`
+	WELL_ID string          `db:"WELL_ID"`
+	JH      sql.NullString  `db:"JH"`
+	SCSJ    sql.NullFloat64 `db:"SCSJ"`
+	ZSFS    sql.NullString  `db:"ZSFS"`
+	PZCDS   sql.NullFloat64 `db:"PZCDS"`
+	RPZSL   sql.NullFloat64 `db:"RPZSL"`
+	RZSL    sql.NullFloat64 `db:"RZSL"`
+	GXYL    sql.NullFloat64 `db:"GXYL"`
+	TY      sql.NullFloat64 `db:"TY"`
+	YY      sql.NullFloat64 `db:"YY"`
+	BZ      sql.NullString  `db:"BZ"`
 }
 
 type Well struct {
