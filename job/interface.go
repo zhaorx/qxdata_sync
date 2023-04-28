@@ -1,9 +1,7 @@
 package job
 
-import "time"
-
 type ScheamaJob interface {
-	runScheama()
+	RunScheama()
 	isTableExist(w Well) bool
 	createTable(w Well)
 	updateTag(w Well)
@@ -11,5 +9,5 @@ type ScheamaJob interface {
 }
 
 type HistoryJob interface {
-	runHistory(func(string, time.Time, time.Time))
+	RunHistory()
 }
