@@ -1,5 +1,7 @@
 package job
 
+import "time"
+
 type ScheamaJob interface {
 	RunScheama()
 	isTableExist(w Well) bool
@@ -10,4 +12,5 @@ type ScheamaJob interface {
 
 type HistoryJob interface {
 	RunHistory()
+	syncWellAll(well_id string, start time.Time, end time.Time)
 }
