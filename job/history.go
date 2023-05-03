@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/zhaorx/zlog"
 	"qxdata_sync/grpool"
-	"qxdata_sync/util"
 )
 
 const (
@@ -25,17 +25,16 @@ func NewOilHistJob() *OilHistJob {
 
 // RunHistory 转储单井历史段日数据至taos
 func (j OilHistJob) RunHistory() {
-	logger = util.InitLog("history")
-	logger.Println("RunHistory start...")
+	zlog.Info("RunHistory start...")
 
 	start, end, err := parseStartEnd(cfg.HistoryStart, cfg.HistoryEnd)
 	if err != nil {
-		logger.Fatalf("parseStartEnd error: " + err.Error())
+		zlog.Fatalf("parseStartEnd error: " + err.Error())
 	}
 
 	list, err := queryWellList(j.typeKey)
 	if err != nil {
-		logger.Fatalf("queryWellList error: " + err.Error())
+		zlog.Fatalf("queryWellList error: " + err.Error())
 		return
 	}
 
@@ -45,7 +44,7 @@ func (j OilHistJob) RunHistory() {
 	pool.WaitCount(len(list)) // how many jobs we should wait
 
 	for i := 0; i < len(list); i++ {
-		// logger.Printf("push queue: %d %s\n", i, list[i].WELL_ID)
+		// zlog.Infof("push queue: %d %s\n", i, list[i].WELL_ID)
 		x := i
 		pool.JobQueue <- func() {
 			j.syncWellAll(list[x].WELL_ID, start, end)
@@ -54,7 +53,7 @@ func (j OilHistJob) RunHistory() {
 	}
 
 	pool.WaitAll()
-	logger.Println("RunHistory end...")
+	zlog.Info("RunHistory end...")
 }
 
 // 转储某井所有时间段的数据
@@ -64,14 +63,14 @@ func (j OilHistJob) syncWellAll(well_id string, start time.Time, end time.Time) 
 	for _, r := range getRanges(start, end) {
 		datas, err := j.queryDataByRange(well_id, r[0], r[1])
 		if err != nil {
-			logger.Println(err.Error())
+			zlog.Info(err.Error())
 			continue
 		}
 
 		if len(datas) > 0 {
 			err = insertBatchOilData(datas, j.tableName(datas[0].WELL_ID))
 			if err != nil {
-				logger.Println(err.Error())
+				zlog.Info(err.Error())
 				continue
 			} else {
 				count += len(datas)
@@ -79,7 +78,7 @@ func (j OilHistJob) syncWellAll(well_id string, start time.Time, end time.Time) 
 		}
 	}
 
-	logger.Printf("sync done: %s[%d] \n", well_id, count)
+	zlog.Infof("sync done: %s[%d] \n", well_id, count)
 }
 
 // 查询单井阶段数据
@@ -116,7 +115,7 @@ func insertBatchOilData(list []OilData, table string) error {
 	sql := fmt.Sprintf(insert_sql, cfg.TD.DataBase, table)
 	_, err := taos.Exec(sql)
 	if err != nil {
-		// logger.Println("insert failed: " + sql)
+		// zlog.Info("insert failed: " + sql)
 		return err
 	}
 
@@ -133,17 +132,16 @@ func NewWaterHistJob() *WaterHistJob {
 
 // RunHistory 转储单井历史段日数据至taos
 func (j WaterHistJob) RunHistory() {
-	logger = util.InitLog("history")
-	logger.Println("RunHistory start...")
+	zlog.Info("RunHistory start...")
 
 	start, end, err := parseStartEnd(cfg.HistoryStart, cfg.HistoryEnd)
 	if err != nil {
-		logger.Fatalf("parseStartEnd error: " + err.Error())
+		zlog.Fatalf("parseStartEnd error: " + err.Error())
 	}
 
 	list, err := queryWellList(j.typeKey)
 	if err != nil {
-		logger.Fatalf("queryWellList error: " + err.Error())
+		zlog.Fatalf("queryWellList error: " + err.Error())
 		return
 	}
 
@@ -153,7 +151,7 @@ func (j WaterHistJob) RunHistory() {
 	pool.WaitCount(len(list)) // how many jobs we should wait
 
 	for i := 0; i < len(list); i++ {
-		// logger.Printf("push queue: %d %s\n", i, list[i].WELL_ID)
+		// zlog.Infof("push queue: %d %s\n", i, list[i].WELL_ID)
 		x := i
 		pool.JobQueue <- func() {
 			j.syncWellAll(list[x].WELL_ID, start, end)
@@ -162,7 +160,7 @@ func (j WaterHistJob) RunHistory() {
 	}
 
 	pool.WaitAll()
-	logger.Println("RunHistory end...")
+	zlog.Info("RunHistory end...")
 }
 
 // 转储某井所有时间段的数据
@@ -172,14 +170,14 @@ func (j WaterHistJob) syncWellAll(well_id string, start time.Time, end time.Time
 	for _, r := range getRanges(start, end) {
 		datas, err := j.queryDataByRange(well_id, r[0], r[1])
 		if err != nil {
-			logger.Println(err.Error())
+			zlog.Info(err.Error())
 			continue
 		}
 
 		if len(datas) > 0 {
 			err = insertBatchWaterData(datas, j.tableName(datas[0].WELL_ID))
 			if err != nil {
-				logger.Println(err.Error())
+				zlog.Info(err.Error())
 				continue
 			} else {
 				count += len(datas)
@@ -187,7 +185,7 @@ func (j WaterHistJob) syncWellAll(well_id string, start time.Time, end time.Time
 		}
 	}
 
-	logger.Printf("sync done: %s[%d] \n", well_id, count)
+	zlog.Infof("sync done: %s[%d] \n", well_id, count)
 }
 
 // 查询单井阶段数据
@@ -222,7 +220,7 @@ func insertBatchWaterData(list []WaterData, table string) error {
 	sql := fmt.Sprintf(insert_sql, cfg.TD.DataBase, table)
 	_, err := taos.Exec(sql)
 	if err != nil {
-		// logger.Println("insert failed: " + sql)
+		// zlog.Info("insert failed: " + sql)
 		return err
 	}
 

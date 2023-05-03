@@ -13,7 +13,7 @@ import (
 var cfg = config.Cfg
 
 func main() {
-	switch cfg.Profile {
+	switch cfg.Mode {
 	case "daily":
 		// registerDailyJob() // 注册每日任务
 	case "history":
@@ -22,8 +22,8 @@ func main() {
 		job.NewWaterSchJob().RunScheama()
 
 		// // 2. 运行历史数据转储
-		job.NewOilHistJob().RunHistory()
-		job.NewWaterHistJob().RunHistory()
+		// job.NewOilHistJob().RunHistory()
+		// job.NewWaterHistJob().RunHistory()
 	}
 
 	select {}

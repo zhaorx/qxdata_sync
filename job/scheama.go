@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/taosdata/driver-go/v3/errors"
-	"qxdata_sync/util"
+	"github.com/zhaorx/zlog"
 )
 
 type OilSchJob struct {
@@ -29,15 +29,15 @@ type BaseJob struct {
 }
 
 func (j BaseJob) RunScheama() {
-	logger = util.InitLog("scheama_" + j.stable + " ")
+	// zlog = util.InitLog("scheama_" + j.stable + " ")
 	// 查询所有单井基本信息
 	list, err := queryWellList(j.typeKey)
 	if err != nil {
-		logger.Fatalf("queryWellList error: " + err.Error())
+		zlog.Fatalf("queryWellList error: " + err.Error())
 		return
 	}
 
-	logger.Printf("start sync tables scheama, count: %v\n", len(list))
+	zlog.Infof("start sync tables scheama, count: %v\n", len(list))
 
 	for i := 0; i < len(list); i++ {
 		// 表存在 update tag 表不存在 create table
@@ -48,7 +48,7 @@ func (j BaseJob) RunScheama() {
 		}
 	}
 
-	logger.Printf("sync tables scheama end......\n")
+	zlog.Infof("sync tables scheama end......\n")
 }
 
 func (j BaseJob) isTableExist(w Well) bool {
@@ -74,10 +74,10 @@ func (j BaseJob) createTable(w Well) {
 		cfg.TD.DataBase, j.stable, w.CYC.String, w.GLQ.String, w.CYD.String, w.CYB.String, w.QK.String, w.JH.String, w.WELL_ID)
 	_, err := taos.Exec(sqlStr)
 	if err != nil {
-		logger.Fatalln("failed to create table:", err)
+		zlog.Fatalf("failed to create table:", err)
 	}
 
-	logger.Printf("create table %s\n", tname)
+	zlog.Infof("create table %s\n", tname)
 }
 
 func (j BaseJob) updateTag(w Well) {
@@ -96,11 +96,11 @@ func (j BaseJob) updateTag(w Well) {
 		sqlStr := fmt.Sprintf(`ALTER TABLE %s SET TAG %s='%s'`, tname, k, v)
 		_, err := taos.Exec(sqlStr)
 		if err != nil {
-			logger.Fatalln("failed to update table tag:", err)
+			zlog.Info("failed to update table tag:" + err.Error())
 		}
 	}
 
-	// logger.Printf("update table %s tag\n", tname)
+	zlog.Infof("update table %s tag\n", tname)
 }
 
 func (j BaseJob) tableName(well_id string) string {

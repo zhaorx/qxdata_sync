@@ -1,9 +1,11 @@
-# 程序模式 daily/history
-profile: history
+profile: dev
+mode: history # 程序模式 daily/history
 
 cron: 0 0 1 1 * ?
 historyStart: 2014-01-01
 historyEnd: 2022-09-14
+log:
+  path: ./logs/log
 
 db:
   host: 10.72.234.78
@@ -19,7 +21,7 @@ db:
 td:
   host: 10.72.234.78
   port: 6030
-#  port: 6041
+  #  port: 6041
   user: root
   password: taosdata
   maxOpenConns: 10

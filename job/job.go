@@ -4,16 +4,15 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/zhaorx/zlog"
 	"qxdata_sync/config"
 	"qxdata_sync/database"
 )
 
 var cfg = config.Cfg
-var logger *log.Logger
 var db *sqlx.DB
 var taos *sqlx.DB
 var size int64 = 500 // 批量insert的天数
@@ -24,13 +23,13 @@ func init() {
 	var err error
 	db, err = database.ConnectDB(cfg.DB)
 	if err != nil {
-		log.Fatalln("db init error: " + err.Error())
+		zlog.Fatal("db init error: " + err.Error())
 	}
 
 	// init taos
 	taos, err = database.ConnectTaos(cfg.TD)
 	if err != nil {
-		log.Fatalln("taos init error: " + err.Error())
+		zlog.Fatal("taos init error: " + err.Error())
 	}
 }
 

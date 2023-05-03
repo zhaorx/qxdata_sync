@@ -4,33 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path"
 
-	"gopkg.in/natefinch/lumberjack.v2"
 	"qxdata_sync/config"
 )
 
 var cfg = config.Cfg
-
-func InitLog(prefix string) *log.Logger {
-	var logger *log.Logger
-	// 1. init log
-	if cfg.Profile == "prod" {
-		logger = log.New(&lumberjack.Logger{
-			Filename:   prefix + ".log",
-			MaxSize:    2, // megabytes
-			MaxBackups: 3,
-			MaxAge:     30, // days
-		}, prefix, log.Lshortfile|log.Ldate|log.Ltime)
-	} else {
-		logger = log.New(os.Stdout, prefix, log.Lshortfile|log.Ldate|log.Ltime)
-	}
-
-	return logger
-}
 
 // DownloadFile 下载文件落盘
 func DownloadFile(filepath string, url string) error {

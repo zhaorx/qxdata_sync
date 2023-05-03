@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/zhaorx/zlog"
 	"gopkg.in/yaml.v3"
 )
 
@@ -29,26 +30,35 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+
+	Cfg.Log.Profile = Cfg.Profile
+	zlog.Init(Cfg.Log)
 }
 
 // cfg 缺省设置
 func NewConfigWithDefault() Config {
 	c := Config{
-		Profile: "daily",
+		Profile: "dev",
+		Mode:    "daily",
 		Cron:    "0 0 1 1 * ?",
+	}
+	c.Log = zlog.Conf{
+		Profile: c.Profile,
+		Path:    "./logs/log",
 	}
 	return c
 }
 
 type Config struct {
-	Profile string `yaml:"profile"` // 执行环境 dev/prod/history/org
+	Profile string `yaml:"profile"` // dev/prod
+	Mode    string `yaml:"mode"`    // daily/history
 	Cron    string `yaml:"cron"`
 	DB      DB     `yaml:"db"` // oracle
 	TD      TD     `yaml:"td"` // taos
 	// 拉取历史数据配置
-	HistoryStart string `yaml:"historyStart"` // 历史数据抓取-开始日期
-	HistoryEnd   string `yaml:"historyEnd"`   // 历史数据抓取-结束日期 缺省默认当前日期
-
+	HistoryStart string    `yaml:"historyStart"` // 历史数据抓取-开始日期
+	HistoryEnd   string    `yaml:"historyEnd"`   // 历史数据抓取-结束日期 缺省默认当前日期
+	Log          zlog.Conf `yaml:"log"`
 }
 
 // oracle数据库配置

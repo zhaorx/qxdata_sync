@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"time"
+
+	"github.com/zhaorx/zlog"
 )
 
 const (
@@ -52,7 +54,7 @@ func getRanges(start time.Time, end time.Time) [][]time.Time {
 
 func parseStartEnd(startStr, endStr string) (start, end time.Time, err error) {
 	if len(startStr) == 0 || len(cfg.HistoryEnd) == 0 {
-		logger.Fatalf("请正确设置历史数据抓取时间段historyStart和historyEnd")
+		zlog.Fatalf("请正确设置历史数据抓取时间段historyStart和historyEnd")
 	}
 
 	loc, _ := time.LoadLocation("Local")
