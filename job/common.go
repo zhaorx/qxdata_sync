@@ -20,7 +20,7 @@ const (
 var cfg = config.Cfg
 var db *sqlx.DB
 var taos *sqlx.DB
-var size int64 = 500 // 批量insert的天数
+var size int64 = 100 // 批量insert的天数
 
 // 初始化目标数据库连接
 func init() {
@@ -122,49 +122,50 @@ func queryOneDayData(rq time.Time) (list []OilData, err error) {
 }
 
 type OilData struct {
-	RQ          time.Time       `db:"RQ"`
-	WELL_ID     string          `db:"WELL_ID"`
-	JH          sql.NullString  `db:"JH"`
-	CYFS        sql.NullString  `db:"CYFS"`
-	BZDM1       sql.NullString  `db:"BZDM1"`
-	BZDM2       sql.NullString  `db:"BZDM2"`
-	HS          sql.NullFloat64 `db:"HS"`
-	HS1         sql.NullFloat64 `db:"HS1"`
-	JCDM        sql.NullString  `db:"JCDM"`
-	QYB         sql.NullFloat64 `db:"QYB"`
-	RCQL        sql.NullFloat64 `db:"RCQL"`
-	RCSL        sql.NullFloat64 `db:"RCSL"`
-	RCYL        sql.NullFloat64 `db:"RCYL"`
-	RCYL1       sql.NullFloat64 `db:"RCYL1"`
-	RXBZ        sql.NullString  `db:"RXBZ"`
-	SCSJ        sql.NullFloat64 `db:"SCSJ"`
-	CSWD        sql.NullFloat64 `db:"CSWD"`
-	CSYL        sql.NullFloat64 `db:"CSYL"`
-	DBDLC       sql.NullFloat64 `db:"DBDLC"`
-	DBDY        sql.NullFloat64 `db:"DBDY"`
-	HY          sql.NullFloat64 `db:"HY"`
-	HYWD        sql.NullFloat64 `db:"HYWD"`
-	RCYHS       sql.NullFloat64 `db:"RCYHS"`
-	RCYL2       sql.NullFloat64 `db:"RCYL2"`
-	SXDL        sql.NullFloat64 `db:"SXDL"`
-	XXDL        sql.NullFloat64 `db:"XXDL"`
-	TY          sql.NullFloat64 `db:"TY"`
-	YY          sql.NullFloat64 `db:"YY"`
-	YZ          sql.NullFloat64 `db:"YZ"`
-	JKWD        sql.NullFloat64 `db:"JKWD"`
-	QYHS        sql.NullFloat64 `db:"QYHS"`
-	XYLYRCYL    sql.NullFloat64 `db:"XYLYRCYL"`
-	CC          sql.NullFloat64 `db:"CC"`
-	CC1         sql.NullFloat64 `db:"CC1"`
-	PL          sql.NullFloat64 `db:"PL"`
-	BJ          sql.NullFloat64 `db:"BJ"`
-	BX          sql.NullFloat64 `db:"BX"`
-	CCBHJND     sql.NullFloat64 `db:"CCBHJND"`
-	CCJND       sql.NullFloat64 `db:"CCJND"`
-	HYJHWND     sql.NullFloat64 `db:"HYJHWND"`
-	BZ          sql.NullString  `db:"BZ"`
-	DESCRIPTION sql.NullString  `db:"DESCRIPTION"`
-	GTLY        sql.NullFloat64 `db:"GTLY"`
+	RQ                time.Time       `db:"RQ"`
+	WELL_ID           string          `db:"WELL_ID"`
+	JH                sql.NullString  `db:"JH"`
+	CYFS              sql.NullString  `db:"CYFS"`
+	BZDM1             sql.NullString  `db:"BZDM1"`
+	BZDM2             sql.NullString  `db:"BZDM2"`
+	HS                sql.NullFloat64 `db:"HS"`
+	HS1               sql.NullFloat64 `db:"HS1"`
+	JCDM              sql.NullString  `db:"JCDM"`
+	QYB               sql.NullFloat64 `db:"QYB"`
+	RCQL              sql.NullFloat64 `db:"RCQL"`
+	RCSL              sql.NullFloat64 `db:"RCSL"`
+	RCYL              sql.NullFloat64 `db:"RCYL"`
+	RCYL1             sql.NullFloat64 `db:"RCYL1"`
+	RXBZ              sql.NullString  `db:"RXBZ"`
+	SCSJ              sql.NullFloat64 `db:"SCSJ"`
+	CSWD              sql.NullFloat64 `db:"CSWD"`
+	CSYL              sql.NullFloat64 `db:"CSYL"`
+	DBDLC             sql.NullFloat64 `db:"DBDLC"`
+	DBDY              sql.NullFloat64 `db:"DBDY"`
+	HY                sql.NullFloat64 `db:"HY"`
+	HYWD              sql.NullFloat64 `db:"HYWD"`
+	RCYHS             sql.NullFloat64 `db:"RCYHS"`
+	RCYL2             sql.NullFloat64 `db:"RCYL2"`
+	SXDL              sql.NullFloat64 `db:"SXDL"`
+	XXDL              sql.NullFloat64 `db:"XXDL"`
+	TY                sql.NullFloat64 `db:"TY"`
+	YY                sql.NullFloat64 `db:"YY"`
+	YZ                sql.NullFloat64 `db:"YZ"`
+	JKWD              sql.NullFloat64 `db:"JKWD"`
+	QYHS              sql.NullFloat64 `db:"QYHS"`
+	XYLYRCYL          sql.NullFloat64 `db:"XYLYRCYL"`
+	CC                sql.NullFloat64 `db:"CC"`
+	CC1               sql.NullFloat64 `db:"CC1"`
+	PL                sql.NullFloat64 `db:"PL"`
+	BJ                sql.NullFloat64 `db:"BJ"`
+	BX                sql.NullFloat64 `db:"BX"`
+	CCBHJND           sql.NullFloat64 `db:"CCBHJND"`
+	CCJND             sql.NullFloat64 `db:"CCJND"`
+	HYJHWND           sql.NullFloat64 `db:"HYJHWND"`
+	BZ                sql.NullString  `db:"BZ"`
+	DESCRIPTION       sql.NullString  `db:"DESCRIPTION"`
+	DYNAMIC_LIQ_LEVEL sql.NullFloat64 `db:"DYNAMIC_LIQ_LEVEL"` // 动液面
+	CMD               sql.NullFloat64 `db:"CMD"`               // 沉没度
 }
 
 type WaterData struct {

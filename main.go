@@ -18,11 +18,11 @@ func main() {
 		// registerDailyJob() // 注册每日任务
 	case "history":
 		// 1. 根据 V_CD_WELL_SOURCE 建立taos中的每个井表
-		job.NewOilSchJob().RunScheama()
-		job.NewWaterSchJob().RunScheama()
+		// job.NewOilSchJob().RunScheama()
+		// job.NewWaterSchJob().RunScheama()
 
 		// // 2. 运行历史数据转储
-		// job.NewOilHistJob().RunHistory()
+		job.NewOilHistJob().RunHistory()
 		// job.NewWaterHistJob().RunHistory()
 	}
 
