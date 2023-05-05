@@ -6,6 +6,7 @@ require (
 	github.com/godror/godror v0.34.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/robfig/cron/v3 v3.0.1
+	github.com/spf13/cast v1.5.0
 	github.com/taosdata/driver-go/v3 v3.1.0
 	github.com/zhaorx/zlog v0.2.0
 	gopkg.in/yaml.v3 v3.0.1

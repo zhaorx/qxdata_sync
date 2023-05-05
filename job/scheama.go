@@ -38,7 +38,6 @@ func (j BaseJob) RunScheama() {
 	}
 
 	zlog.Infof("start sync tables scheama, count: %v\n", len(list))
-
 	for i := 0; i < len(list); i++ {
 		// 表存在 update tag 表不存在 create table
 		if j.isTableExist(list[i]) {
@@ -96,7 +95,7 @@ func (j BaseJob) updateTag(w Well) {
 		sqlStr := fmt.Sprintf(`ALTER TABLE %s SET TAG %s='%s'`, tname, k, v)
 		_, err := taos.Exec(sqlStr)
 		if err != nil {
-			zlog.Info("failed to update table tag:" + err.Error())
+			zlog.Error("failed to update table tag:" + err.Error())
 		}
 	}
 

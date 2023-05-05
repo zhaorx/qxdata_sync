@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/spf13/cast"
 	"github.com/zhaorx/zlog"
 	"qxdata_sync/config"
 	"qxdata_sync/database"
@@ -20,7 +21,7 @@ const (
 var cfg = config.Cfg
 var db *sqlx.DB
 var taos *sqlx.DB
-var size int64 = 100 // 批量insert的天数
+var size int64 = 1000 // 批量insert的天数
 
 // 初始化目标数据库连接
 func init() {
@@ -121,6 +122,61 @@ func queryOneDayData(rq time.Time) (list []OilData, err error) {
 	return list, nil
 }
 
+// 拼接insert sql 处理零值的float为null
+func nullFloat(f sql.NullFloat64) string {
+	if f.Valid {
+		return cast.ToString(f.Float64)
+	}
+	return "NULL"
+}
+
+// type OilData struct {
+// 	RQ                time.Time `db:"RQ"`
+// 	WELL_ID           string    `db:"WELL_ID"`
+// 	JH                *string   `db:"JH"`
+// 	CYFS              *string   `db:"CYFS"`
+// 	BZDM1             *string   `db:"BZDM1"`
+// 	BZDM2             *string   `db:"BZDM2"`
+// 	HS                *float64  `db:"HS"`
+// 	HS1               *float64  `db:"HS1"`
+// 	JCDM              *string   `db:"JCDM"`
+// 	QYB               *float64  `db:"QYB"`
+// 	RCQL              *float64  `db:"RCQL"`
+// 	RCSL              *float64  `db:"RCSL"`
+// 	RCYL              *float64  `db:"RCYL"`
+// 	RCYL1             *float64  `db:"RCYL1"`
+// 	RXBZ              *string   `db:"RXBZ"`
+// 	SCSJ              *float64  `db:"SCSJ"`
+// 	CSWD              *float64  `db:"CSWD"`
+// 	CSYL              *float64  `db:"CSYL"`
+// 	DBDLC             *float64  `db:"DBDLC"`
+// 	DBDY              *float64  `db:"DBDY"`
+// 	HY                *float64  `db:"HY"`
+// 	HYWD              *float64  `db:"HYWD"`
+// 	RCYHS             *float64  `db:"RCYHS"`
+// 	RCYL2             *float64  `db:"RCYL2"`
+// 	SXDL              *float64  `db:"SXDL"`
+// 	XXDL              *float64  `db:"XXDL"`
+// 	TY                *float64  `db:"TY"`
+// 	YY                *float64  `db:"YY"`
+// 	YZ                *float64  `db:"YZ"`
+// 	JKWD              *float64  `db:"JKWD"`
+// 	QYHS              *float64  `db:"QYHS"`
+// 	XYLYRCYL          *float64  `db:"XYLYRCYL"`
+// 	CC                *float64  `db:"CC"`
+// 	CC1               *float64  `db:"CC1"`
+// 	PL                *float64  `db:"PL"`
+// 	BJ                *float64  `db:"BJ"`
+// 	BX                *float64  `db:"BX"`
+// 	CCBHJND           *float64  `db:"CCBHJND"`
+// 	CCJND             *float64  `db:"CCJND"`
+// 	HYJHWND           *float64  `db:"HYJHWND"`
+// 	BZ                *string   `db:"BZ"`
+// 	DESCRIPTION       *string   `db:"DESCRIPTION"`
+// 	DYNAMIC_LIQ_LEVEL *float64  `db:"DYNAMIC_LIQ_LEVEL"` // 动液面
+// 	PUMP_DEPTH        *float64  `db:"PUMP_DEPTH"`        // 沉没度
+// }
+
 type OilData struct {
 	RQ                time.Time       `db:"RQ"`
 	WELL_ID           string          `db:"WELL_ID"`
@@ -165,7 +221,7 @@ type OilData struct {
 	BZ                sql.NullString  `db:"BZ"`
 	DESCRIPTION       sql.NullString  `db:"DESCRIPTION"`
 	DYNAMIC_LIQ_LEVEL sql.NullFloat64 `db:"DYNAMIC_LIQ_LEVEL"` // 动液面
-	CMD               sql.NullFloat64 `db:"CMD"`               // 沉没度
+	PUMP_DEPTH        sql.NullFloat64 `db:"PUMP_DEPTH"`        // 沉没度
 }
 
 type WaterData struct {
