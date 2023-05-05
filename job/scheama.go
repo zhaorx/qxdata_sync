@@ -5,6 +5,7 @@ import (
 
 	"github.com/taosdata/driver-go/v3/errors"
 	"github.com/zhaorx/zlog"
+	"qxdata_sync/grpool"
 )
 
 type OilSchJob struct {
@@ -38,16 +39,30 @@ func (j BaseJob) RunScheama() {
 	}
 
 	zlog.Infof("start sync tables scheama, count: %v\n", len(list))
+	// 线程池
+	pool := grpool.NewPool(POOL_SIZE, QUEUE_SIZE)
+	defer pool.Release()
+	pool.WaitCount(len(list)) // how many jobs we should wait
+
 	for i := 0; i < len(list); i++ {
-		// 表存在 update tag 表不存在 create table
-		if j.isTableExist(list[i]) {
-			j.updateTag(list[i])
-		} else {
-			j.createTable(list[i])
+		x := i
+		pool.JobQueue <- func() {
+			j.syncWellScheama(list[x])
+			defer pool.JobDone()
 		}
 	}
+	pool.WaitAll()
 
 	zlog.Infof("sync tables scheama end......\n")
+}
+
+func (j BaseJob) syncWellScheama(w Well) {
+	// 表存在 update tag 表不存在 create table
+	if j.isTableExist(w) {
+		j.updateTag(w)
+	} else {
+		j.createTable(w)
+	}
 }
 
 func (j BaseJob) isTableExist(w Well) bool {

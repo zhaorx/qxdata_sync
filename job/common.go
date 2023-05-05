@@ -16,12 +16,15 @@ import (
 const (
 	WELL_KEY_OIL   = "1"
 	WELL_KEY_WATER = "3"
+	POOL_SIZE      = 10   // 多线程数量
+	QUEUE_SIZE     = 20   // 任务队列容量
+	INSERT_SIZE    = 1000 // 批量insert的天数
 )
 
 var cfg = config.Cfg
 var db *sqlx.DB
 var taos *sqlx.DB
-var size int64 = 1000 // 批量insert的天数
+var loc, _ = time.LoadLocation("Asia/Shanghai")
 
 // 初始化目标数据库连接
 func init() {
@@ -67,7 +70,7 @@ func queryWellList(well_key string) (list []Well, err error) {
 // 匹分时间区间
 func getRanges(start time.Time, end time.Time) [][]time.Time {
 	ranges := make([][]time.Time, 0)
-	sizeDur := time.Duration(size) * time.Hour * 24
+	sizeDur := time.Duration(INSERT_SIZE) * time.Hour * 24
 	cur := start
 	for ; cur.Before(end); cur = cur.Add(sizeDur) {
 		item := make([]time.Time, 2)

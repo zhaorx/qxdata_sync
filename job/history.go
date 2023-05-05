@@ -9,13 +9,6 @@ import (
 	"qxdata_sync/grpool"
 )
 
-const (
-	POOL_SIZE  = 10 // 多线程数量
-	QUEUE_SIZE = 20 // 任务队列容量
-)
-
-var loc, _ = time.LoadLocation("Asia/Shanghai")
-
 type OilHistJob struct {
 	BaseJob
 }
@@ -45,7 +38,6 @@ func (j OilHistJob) RunHistory() {
 	pool.WaitCount(len(list)) // how many jobs we should wait
 
 	for i := 0; i < len(list); i++ {
-		// zlog.Infof("push queue: %d %s\n", i, list[i].WELL_ID)
 		x := i
 		pool.JobQueue <- func() {
 			j.syncWellAll(list[x].WELL_ID, start, end)
